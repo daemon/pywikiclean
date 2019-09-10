@@ -24,7 +24,12 @@ FOOTER_PATT = "(==\\s*See also\\s*==.*|==\\s*References\\s*==.*|==\\s*Further " 
 MULT_NL_PATT = re.compile("[\\n\\r][\\n\\r]+")
 
 
-def clean(content, remove_footer=True, remove_links=True, remove_nested_constructs=True, remove_nested_constructs_only=False):
+def clean(content,
+          remove_footer=True,
+          remove_links=True,
+          remove_nested_constructs=True,
+          remove_nested_constructs_only=False,
+          delete_headings=False):
     if remove_nested_constructs_only:
         content = remove_image_captions(content)
         content = remove_double_bracket(content)
@@ -42,7 +47,8 @@ def clean(content, remove_footer=True, remove_links=True, remove_nested_construc
         content = remove_image_captions(content)
         content = remove_double_bracket(content)
     content = re.sub(HTML_COMMENT_EMPHASIS, "", content)
-    content = re.sub(HEADINGS, r"\1\n", content)
+    heading_sub = "\n" if delete_headings else r"\1\n"
+    content = re.sub(HEADINGS, heading_sub, content)
     content = re.sub(CATEGORY_LINKS, "", content)
     if remove_links:
         content = re.sub(LINKS1, r"\1", content)
